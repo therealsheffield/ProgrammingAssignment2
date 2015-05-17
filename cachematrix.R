@@ -29,14 +29,25 @@
 #
 #-------------------------------------------------------------------------------
 makeCacheMatrix <- function(x = matrix()) {
+    # Set the cache to NULL initially
     cinverse <- NULL
+
+    # Define the set function. Sets the new matrix and empties the cache
     set <- function(newmatrix) {
         x <<- newmatrix
         cinverse <<- NULL
     }
+
+    # Define the get function. Returns the matrix.
     get <- function() x
+
+    # Define the setinverse function. Caches the new inverse.
     setinverse <- function(newinverse) cinverse <<- newinverse
+
+    # Define the getinverse function. Returns the cached inverse.
     getinverse <- function() cinverse
+
+    # Return the "matrix" which is really a list of the functions defined above.
     list(set = set, get = get, setinverse = setinverse, getinverse = getinverse)
 }
 
@@ -55,11 +66,14 @@ makeCacheMatrix <- function(x = matrix()) {
 #
 #-------------------------------------------------------------------------------
 cacheSolve <- function(x, ...) {
+    # Get the cached inverse matrix
     cinverse <- x$getinverse()
     if (!is.null(cinverse)) {
+        # Inverse was cached. Print a message and return it.
         message("getting cached data")
         return(cinverse)
     }
+    # Inverse wasn't cached. Calculate the inverse, cache it, and return it.
     matrix <- x$get()
     cinverse <- solve(matrix, ...)
     x$setinverse(cinverse)
